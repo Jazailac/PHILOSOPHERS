@@ -14,6 +14,25 @@ static void eat(t_philo *p)
     pthread_mutex_unlock(p->left_fork);
 }
 
+// static void think(t_philo *p)
+// {
+//     long long think_limit;
+//     long long start_think;
+
+//     print_action(p->sim, p->id, "is thinking");
+//     think_limit = philo_get_last_meal(p) + p->sim->time_to_die;
+//     start_think = timestamp_ms();
+//     while (!sim_get_stop(p->sim))
+//     {
+//         long long now = timestamp_ms();
+//         if (now >= think_limit)  
+//             break;
+//         if (now - start_think >= 1) 
+//             break;
+//         usleep(100);
+//     }
+// }
+
 void *philo_routine(void *arg)
 {
     t_philo *p = (t_philo *)arg;
@@ -23,17 +42,15 @@ void *philo_routine(void *arg)
     while (!sim_get_stop(p->sim))
     {
         eat(p);
-        
-        // Fixed: Check if this philosopher has eaten enough meals
         if (p->sim->must_eat != -1 && philo_get_meals(p) >= p->sim->must_eat)
         {
             sim_inc_finished(p->sim);
-            break;  // This philosopher is done
-        }
-        
+            break;
+        } 
         print_action(p->sim, p->id, "is sleeping");
         smart_sleep(p->sim->time_to_sleep, p->sim);
         print_action(p->sim, p->id, "is thinking");
+        // think(p);
     }
     return (NULL);
 }

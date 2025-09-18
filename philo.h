@@ -70,9 +70,12 @@ void        destroy_simulation(t_simulation *sim);
 /* routine + monitor */
 void        *philo_routine(void *arg);
 void        *monitor_routine(void *arg);
-
+int one_philo(t_simulation *sim);
+int ft_strcmp(const char *s1, char *s2);
+int check_death(t_simulation *sim);
 
 /*parsing*/
 int is_digit(char *str);
+void   init_locks(t_simulation *sim);
 #endif
 

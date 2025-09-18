@@ -52,22 +52,29 @@ int parse_args(t_simulation *sim, int ac, char **av)
     return (0);
 }
 
+void init_locks(t_simulation *sim)
+{
+    pthread_mutex_init(&sim->print_lock, NULL);
+    pthread_mutex_init(&sim->stop_lock, NULL);
+    pthread_mutex_init(&sim->finish_lock, NULL);
+}
+
 int init_simulation(t_simulation *sim)
 {
     int i;
 
     sim->stop = 0;
-    sim->finished_count = 0;  // Initialize finished_count
+    sim->finished_count = 0;
     sim->forks = malloc(sizeof(pthread_mutex_t) * sim->philo_count);
     sim->philos = malloc(sizeof(t_philo) * sim->philo_count);
     if (!sim->forks || !sim->philos)
         return (1);
-    pthread_mutex_init(&sim->print_lock, NULL);
-    pthread_mutex_init(&sim->stop_lock, NULL);
-    pthread_mutex_init(&sim->finish_lock, NULL);  // Fixed: initialize finish_lock
-    for (i = 0; i < sim->philo_count; i++)
-        pthread_mutex_init(&sim->forks[i], NULL);
-    for (i = 0; i < sim->philo_count; i++)
+    init_locks(sim);
+    i = 0;
+    while (i < sim->philo_count)
+        pthread_mutex_init(&sim->forks[i++], NULL);
+    i = 0;
+    while (i < sim->philo_count)
     {
         sim->philos[i].id = i + 1;
         sim->philos[i].meals_eaten = 0;
@@ -76,24 +83,9 @@ int init_simulation(t_simulation *sim)
         sim->philos[i].left_fork = &sim->forks[i];
         sim->philos[i].right_fork = &sim->forks[(i + 1) % sim->philo_count];
         sim->philos[i].sim = sim;
+        i++;
     }
     return (0);
 }
 
-void destroy_simulation(t_simulation *sim)
-{
-    int i;
-
-    i = 0;
-    while (i < sim->philo_count)
-    {
-        pthread_mutex_destroy(&sim->forks[i]);
-        pthread_mutex_destroy(&sim->philos[i].meal_lock);
-        i++;
-    }
-    pthread_mutex_destroy(&sim->print_lock);
-    pthread_mutex_destroy(&sim->stop_lock);
-    pthread_mutex_destroy(&sim->finish_lock);  // Fixed: destroy finish_lock
-    free(sim->forks);
-    free(sim->philos);
-}       
+    

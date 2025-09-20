@@ -6,7 +6,7 @@
 /*   By: jazailac <jazailac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/19 21:11:25 by jazailac          #+#    #+#             */
-/*   Updated: 2025/09/19 21:13:34 by jazailac         ###   ########.fr       */
+/*   Updated: 2025/09/20 17:14:22 by jazailac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@ int	main(int ac, char **av)
 		printf("Usage: %s nb_philo t_die t_eat t_sleep [must_eat]\n", av[0]);
 		return (1);
 	}
+	if (sim.must_eat == 0)
+		return (0);
 	if (init_simulation(&sim) != 0)
 		return (1);
 	sim.start_time = timestamp_ms();
